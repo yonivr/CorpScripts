@@ -15,7 +15,7 @@ $s = new-SFTPSession -credential $SFTPCred -ComputerName $SFTPServer
 #get file from SFTP
 
 #get latest file containing cleanusers
-$LatestCleanUsers = (Get-SFTPChildItem -SFTPSession $s | Where-Object {$_.Name -like "*CleanUsers*"} | Sort-Object LastAccessTime -Descending | Select-Object -First 1 | Select-Object name).name
+$LatestCleanUsers = (Get-SFTPChildItem -SFTPSession $s | Where-Object {$_.Name -like "*CleanUsers*"} | Sort-Object CreationTime -Descending | Select-Object -First 1 | Select-Object name).name
 
 "Downloading $File..."
 Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $ScriptRoot -Overwrite
@@ -26,7 +26,7 @@ Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $ScriptRoo
         #If user doesnt exist create user
 $CleanADUsers = Import-Csv $ScriptRoot\$LatestCleanUsers
 ($CleanADUsers).count
-<#
+
 $CleanADUsers | foreach-object {
     $user = $_.SamAccountName
 	$UserExists = Get-ADObject -Filter {SamAccountName -eq $user}        
@@ -47,7 +47,7 @@ $CleanADUsers | foreach-object {
         -Path $OU `
         -AccountPassword $SecurePass `
         -Enabled $True `
-        -ChangePasswordAtLogon:$true# >
+        -ChangePasswordAtLogon:$true#>
 
 		"$UserPrinicpalName	$UserPass"
 		$count=$count + 1
