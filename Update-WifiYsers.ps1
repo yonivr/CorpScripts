@@ -24,12 +24,14 @@ Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $ScriptRoo
     #iterate list of users
     #check if user exists in Dirty AD
         #If user doesnt exist create user
+$CleanADUsers = Import-Csv $ScriptRoot\$LatestCleanUsers
 $CleanADUsers | foreach-object {
-	$UserExists = Get-ADObject -Filter {samaccountname -eq $_.SamAccountName}          
-	if(!$UserExists)
+    $user = $_.SamAccountName
+	$UserExists = Get-ADObject -Filter {SamAccountName -eq $user}        
+	 if(!$UserExists)
 	{
 		$UserPass = "Hrz"+$_.extensionAttribute2
-		$userprinicpalname = $_.SamAccountName + "@888free.net" 
+		$userprinicpalname = $user + "@888free.net" 
 		#New-ADUser -SamAccountName $_.SamAccountName -UserPrincipalName $userprinicpalname -Name $_.name -DisplayName $_.name -GivenName $_.cn -SurName $_.sn -Path $OU -AccountPassword (ConvertTo-SecureString $DefaultADPassword -AsPlainText -force) -Enabled $True -ChangePasswordAtLogon:$true
 		"$userprinicpalname	$UserPass"
 		$count=$count + 1
