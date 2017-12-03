@@ -25,10 +25,8 @@ Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $ScriptRoo
     #check if user exists in Dirty AD
         #If user doesnt exist create user
 $CleanADUsers | foreach-object {
-	$user=$_.SamAccountName
-	$Searcher = [ADSISearcher]"sAMAccountName=$user"
-	$Results = $Searcher.FindOne()            
-	if(!$Results)
+	$UserExists = Get-ADObject -Filter {samaccountname -eq $_.SamAccountName}          
+	if(!$UserExists)
 	{
 		$UserPass = "Hrz"+$_.extensionAttribute2
 		$userprinicpalname = $_.SamAccountName + "@888free.net" 
