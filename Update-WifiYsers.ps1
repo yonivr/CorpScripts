@@ -7,18 +7,17 @@ $SFTPPass = "85eGOUN5" | ConvertTo-SecureString -asPlainText -Force
 $SFTPCred =  New-Object System.Management.Automation.PSCredential($SFTPUser,$SFTPPass)
 $SFTPServer = "sftp.888holdings.com"
 $ScriptRoot = "C:\scripts\AD-Sync\v2"
-$date = (get-date -Format dd-MM-yy-mm-ss)
-$CleanADUsers = "$ScriptRoot\LatestClean-$date.csv"
+$CleanADUsers = "$ScriptRoot\LatestClean.csv"
+$CleanUsers = "CleanUsers.csv"
 $count=0
 #connect to SFTP
 $s = new-SFTPSession -credential $SFTPCred -ComputerName $SFTPServer
 #get file from SFTP
 
 #get latest file containing cleanusers
-$LatestCleanUsers = (Get-SFTPChildItem -SFTPSession $s | Where-Object {$_.Name -like "*CleanUsers*"} | Sort-Object CreationTime -Descending | Select-Object -First 1 | Select-Object name).name
 
 "Downloading $File..."
-Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $ScriptRoot -Overwrite
+Get-SFTPFile -SFTPSession $s -RemoteFile $CleanUsers -LocalPath $ScriptRoot -Overwrite
 
 #create new 888free users
     #iterate list of users
@@ -26,7 +25,7 @@ Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $ScriptRoo
         #If user doesnt exist create user
 $CleanADUsers = Import-Csv $ScriptRoot\$LatestCleanUsers
 ($CleanADUsers).count
-
+<#
 $CleanADUsers | foreach-object {
     $user = $_.SamAccountName
 	$UserExists = Get-ADObject -Filter {SamAccountName -eq $user}        
@@ -47,7 +46,7 @@ $CleanADUsers | foreach-object {
         -Path $OU `
         -AccountPassword $SecurePass `
         -Enabled $True `
-        -ChangePasswordAtLogon:$true#>
+        -ChangePasswordAtLogon:$true# >
 
 		"$UserPrinicpalName	$UserPass"
 		$count=$count + 1
