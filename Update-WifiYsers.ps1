@@ -6,7 +6,7 @@ $SFTPUser = "Wifi-ADSync-SystemBO"
 $SFTPPass = "85eGOUN5" | ConvertTo-SecureString -asPlainText -Force
 $SFTPCred =  New-Object System.Management.Automation.PSCredential($SFTPUser,$SFTPPass)
 $SFTPServer = "sftp.888holdings.com"
-$ScriptRoot = "C:\scripts\AD-Sync"
+$ScriptRoot = "C:\scripts\AD-Sync\v2"
 $date = (get-date -Format dd-MM-yy-mm-ss)
 $CleanADUsers = "$ScriptRoot\LatestClean-$date.csv"
 $count=0
@@ -18,7 +18,7 @@ $s = new-SFTPSession -credential $SFTPCred -ComputerName $SFTPServer
 $LatestCleanUsers = (Get-SFTPChildItem -SFTPSession $s | Where-Object {$_.Name -like "*CleanUsers*"} | Sort-Object LastAccessTime -Descending | Select-Object -First 1 | Select-Object name).name
 
 "Downloading $File..."
-Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $CleanADUsers
+Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $ScriptRoot -Overwrite
 
 #create new 888free users
     #iterate list of users
@@ -26,7 +26,7 @@ Get-SFTPFile -SFTPSession $s -RemoteFile $LatestCleanUsers -LocalPath $CleanADUs
         #If user doesnt exist create user
 $CleanADUsers | foreach-object {
 	$user=$_.SamAccountName
-	$Searcher = [ADSISearcher]"sAMAccountName=$User"
+	$Searcher = [ADSISearcher]"sAMAccountName=$user"
 	$Results = $Searcher.FindOne()            
 	if(!$Results)
 	{
@@ -40,7 +40,7 @@ $CleanADUsers | foreach-object {
 $count
 
 #delete files from SFTP
-Remove-SFTPItem -SFTPSession $s -Path "/$LatestCleanUsers"     -ErrorAction SilentlyContinue
+#Remove-SFTPItem -SFTPSession $s -Path "/$LatestCleanUsers"     -ErrorAction SilentlyContinue
 
 #delete file locally
-remove-item  $CleanADUsers -ErrorAction SilentlyContinue
+#remove-item  $CleanADUsers -ErrorAction SilentlyContinue
