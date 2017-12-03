@@ -30,10 +30,24 @@ $CleanADUsers | foreach-object {
 	$UserExists = Get-ADObject -Filter {SamAccountName -eq $user}        
 	 if(!$UserExists)
 	{
-		$UserPass = "Hrz"+$_.extensionAttribute2
-		$userprinicpalname = $user + "@888free.net" 
-		#New-ADUser -SamAccountName $_.SamAccountName -UserPrincipalName $userprinicpalname -Name $_.name -DisplayName $_.name -GivenName $_.cn -SurName $_.sn -Path $OU -AccountPassword (ConvertTo-SecureString $DefaultADPassword -AsPlainText -force) -Enabled $True -ChangePasswordAtLogon:$true
-		"$userprinicpalname	$UserPass"
+        $UserPass = "Hrz"+$_.extensionAttribute2
+        $SecurePass = (ConvertTo-SecureString $UserPass -AsPlainText -force)
+
+		$UserPrinicpalName = $user + "@888free.net" 
+       <# 
+       New-ADUser `
+        -SamAccountName $user `
+        -UserPrincipalName $UserPrinicpalName`
+        -Name $_.name `
+        -DisplayName $_.name `
+        -GivenName $_.cn `
+        -SurName $_.sn `
+        -Path $OU `
+        -AccountPassword $SecurePass `
+        -Enabled $True `
+        -ChangePasswordAtLogon:$true#>
+
+		"$UserPrinicpalName	$UserPass"
 		$count=$count + 1
 	}
  }
