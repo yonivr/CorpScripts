@@ -23,9 +23,9 @@ Get-SFTPFile -SFTPSession $s -RemoteFile $CleanUsers -LocalPath $ScriptRoot -Ove
     #iterate list of users
     #check if user exists in Dirty AD
         #If user doesnt exist create user
-$CleanADUsers = Import-Csv $ScriptRoot\$LatestCleanUsers
+$CleanADUsers = Import-Csv $ScriptRoot\$CleanUsers
 ($CleanADUsers).count
-<#
+
 $CleanADUsers | foreach-object {
     $user = $_.SamAccountName
 	$UserExists = Get-ADObject -Filter {SamAccountName -eq $user}        
@@ -46,9 +46,9 @@ $CleanADUsers | foreach-object {
         -Path $OU `
         -AccountPassword $SecurePass `
         -Enabled $True `
-        -ChangePasswordAtLogon:$true# >
+        -ChangePasswordAtLogon:$true#>
 
-		"$UserPrinicpalName	$UserPass"
+		#"$UserPrinicpalName	$UserPass"
 		$count=$count + 1
 	}
  }
