@@ -8,7 +8,7 @@ Purpose: get list of users from clean and create users in dirty AD
 #Parameters
 #SFTP cred
 $SFTPUser = "Wifi-ADSync-SystemBO"
-$SFTPPass = "85eGOUN5" | ConvertTo-SecureString -asPlainText -Force
+$SFTPPass = "password" | ConvertTo-SecureString -asPlainText -Force
 $SFTPCred =  New-Object System.Management.Automation.PSCredential($SFTPUser,$SFTPPass)
 $SFTPServer = "sftp.888holdings.com"
 #File details
