@@ -11,17 +11,17 @@ $SFTPPass = "85eGOUN5" | ConvertTo-SecureString -asPlainText -Force
 $SFTPCred =  New-Object System.Management.Automation.PSCredential($SFTPUser,$SFTPPass)
 $SFTPServer = "sftp.888holdings.com"
 #File details
-$ScriptRoot = "C:\scripts\AD-Sync\v2"
+$ScriptRoot = "C:\scripts\Update-WifiUsers"
 $CleanUsers = "CleanUsers.csv"
 #general param
 $count=0#count users to create
 $OU = "OU=WiFi,OU=Users,OU=888free.net,DC=888Free,DC=net"
 #connect to SFTP
-$s = new-SFTPSession -credential $SFTPCred -ComputerName $SFTPServer
+$s = new-SFTPSession -credential $SFTPCred -ComputerName $SFTPServer -AcceptKey:$true
 #get file from SFTP and overwrite old file
 
 "Downloading $File..."
-Get-SFTPFile -SFTPSession $s -RemoteFile $CleanUsers -LocalPath $ScriptRoot -Overwrite
+Get-SFTPFile -SFTPSession $s -RemoteFile $CleanUsers -LocalPath $ScriptRoot -Overwrite 
 
 $CleanADUsers = Import-Csv $ScriptRoot\$CleanUsers
 ($CleanADUsers).count
