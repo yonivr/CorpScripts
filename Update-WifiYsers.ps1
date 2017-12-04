@@ -9,6 +9,7 @@ $SFTPServer = "sftp.888holdings.com"
 $ScriptRoot = "C:\scripts\AD-Sync\v2"
 $CleanUsers = "CleanUsers.csv"
 $count=0
+$OU = "OU=WiFi,OU=Users,OU=888free.net,DC=888Free,DC=net"
 #connect to SFTP
 $s = new-SFTPSession -credential $SFTPCred -ComputerName $SFTPServer
 #get file from SFTP
@@ -32,29 +33,36 @@ $CleanADUsers | foreach-object {
 	{
         $UserPass = "Hrz"+$_.extensionAttribute2
         $SecurePass = (ConvertTo-SecureString $UserPass -AsPlainText -force)
-
+        $UserDisplayName = $_.name
+        $GivenName = $_.GivenName
+        $Surname = $_.Surname
+        
 		$UserPrinicpalName = $user + "@888free.net" 
-       <# 
+        
        New-ADUser `
         -SamAccountName $user `
         -UserPrincipalName $UserPrinicpalName`
-        -Name $_.name `
-        -DisplayName $_.name `
-        -GivenName $_.cn `
-        -SurName $_.sn `
+        -Name $UserDisplayName `
+        -DisplayName $UserDisplayName `
+        -GivenName $GivenName `
+        -SurName $Surname `
         -Path $OU `
         -AccountPassword $SecurePass `
         -Enabled $True `
-        -ChangePasswordAtLogon:$true#>
+        -ChangePasswordAtLogon:$false
+        
+        "user:$user
+         upn:$UserPrinicpalName 
+         displayname:$UserDisplayName 
+         cn:$GivenName 
+         sn:$Surname
+         password:$UserPass
+         ou:$OU
+         
+         "
 
-		"$UserPrinicpalName	$UserPass"
+		
 		$count=$count + 1
 	}
  }
 $count
-#>
-#delete files from SFTP
-#Remove-SFTPItem -SFTPSession $s -Path "/$LatestCleanUsers"     -ErrorAction SilentlyContinue
-
-#delete file locally
-#remove-item  $CleanADUsers -ErrorAction SilentlyContinue
