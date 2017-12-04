@@ -1,6 +1,7 @@
 <#
 made by Yoni Rivkin 
 Requires -module Posh-SSH
+Requires -module AD
 Purpose: get list of users from clean and create users in dirty AD
 #>
 
