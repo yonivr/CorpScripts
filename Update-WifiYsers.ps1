@@ -12,7 +12,7 @@ $SFTPPass = "85eGOUN5" | ConvertTo-SecureString -asPlainText -Force
 $SFTPCred =  New-Object System.Management.Automation.PSCredential($SFTPUser,$SFTPPass)
 $SFTPServer = "sftp.888holdings.com"
 #File details
-$ScriptRoot = "C:\scripts\Update-WifiUsers"
+$ScriptRoot = "C:\scripts\Create-WifiUsers"
 $CleanUsers = "CleanUsers.csv"
 #general param
 $count=0#count users to create
