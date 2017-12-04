@@ -10,7 +10,7 @@ Requires -module AD
 $HrzBase = "OU=Users,OU=Herzliya,OU=Organization,DC=888holdings,DC=corp"
 #SFTP parameters
 $SFTPUser = "Wifi-ADSync-SystemBO"
-$SFTPPass = "85eGOUN5" | ConvertTo-SecureString -asPlainText -Force
+$SFTPPass = "passowrd" | ConvertTo-SecureString -asPlainText -Force
 $SFTPCred =  New-Object System.Management.Automation.PSCredential($SFTPUser,$SFTPPass)
 $SFTPServer = "sftp.888holdings.com"
 #general parameters
