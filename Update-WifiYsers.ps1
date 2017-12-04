@@ -7,7 +7,6 @@ $SFTPPass = "85eGOUN5" | ConvertTo-SecureString -asPlainText -Force
 $SFTPCred =  New-Object System.Management.Automation.PSCredential($SFTPUser,$SFTPPass)
 $SFTPServer = "sftp.888holdings.com"
 $ScriptRoot = "C:\scripts\AD-Sync\v2"
-$CleanADUsers = "$ScriptRoot\LatestClean.csv"
 $CleanUsers = "CleanUsers.csv"
 $count=0
 #connect to SFTP
@@ -48,7 +47,7 @@ $CleanADUsers | foreach-object {
         -Enabled $True `
         -ChangePasswordAtLogon:$true#>
 
-		#"$UserPrinicpalName	$UserPass"
+		"$UserPrinicpalName	$UserPass"
 		$count=$count + 1
 	}
  }
