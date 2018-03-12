@@ -1,0 +1,12 @@
+$source = "C:\Temp\exams"
+$destination = "c:\temp\examdst"
+
+robocopy $source  $destination  /R:3 /W:10 /Z *.doc .docx *.txt
+$TextExams=$null
+$TextExams = Get-ChildItem $source  #|  Where-Object {($_.Extension -like "*.txt*") -or ($_.Extension -like "*.doc*") -or ($_.Extension -like "*.docx*") } 
+$TextExams
+If($TextExams)
+{
+    Send-MailMessage -from yoni@test8.com -To yoni.rivkin@888holdings.com -Attachments $TextExams.VersionInfo.filename -SmtpServer 192.118.67.116 -Subject "exams"
+    Get-ChildItem $source | Remove-Item -Force
+}
